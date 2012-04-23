@@ -12,8 +12,14 @@ module Nickel
     
     def standardize
       @query = self.dup # needed for case correcting after extract_message has been called
+      
+      quoted_fragments = scan /"[^"]+"/
+      gsub!(/"[^"]+"/, '%s')
       query_formatting  # easy text manipulation, no regex involved here
       query_pre_processing  # puts query in the form that construct_finder understands, lots of manipulation here
+      
+      self.replace(self % quoted_fragments)
+      
       self
     end
 

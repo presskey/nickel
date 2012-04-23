@@ -8,10 +8,15 @@ module Nickel
     attr_reader :constructs, :components
     
     def initialize(query, curdate, curtime)
+      query = query.dup
+      
       # If query is a string (for debug), use it to initialize NLPQuery.
       query.class == String && query = NLPQuery.new(query)    
       @curdate = curdate
       @curtime = curtime
+      
+      query.gsub!(/"[^"]+"/, $&.split.map{|w| '?' * w.length}.join(' ')) if query =~ /"[^"]+"/
+      
       @components = query.split
       @pos = 0    # iterator
       @constructs = []
